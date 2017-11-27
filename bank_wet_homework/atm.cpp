@@ -13,9 +13,9 @@
 
 #include "atm.h"
 
-atm::atm(char* ) {
-    FILE* filename = "";
-    open(filename, 'r');
+atm::atm(char* filename) {
+    ifstream file(filename);
+    
 }
 
 atm::atm(const atm& orig) {
@@ -28,12 +28,16 @@ atm::withdraw(){
     //etc.
 }
 atm::parse(){
+    string str; 
+    file.getline(str, 255)
+    cout << str;
+    
     
 }
 atm::run(){
     do{
-    parse_line();
-    sleep(1); // lock this.
+        parse();
+        sleep(1); // lock this.
     }while(line!=EOF)
 }
 

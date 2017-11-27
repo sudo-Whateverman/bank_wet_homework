@@ -13,14 +13,20 @@
 
 #ifndef ATM_H
 #define ATM_H
-
+#include <fstream>
+using namespace std;
 class atm {
 public:
-    atm();
+    atm(char* );
     atm(const atm& orig);
+    int create_account(int id);
+    int withdraw();
+    char* parse();
+    static void* run(void*);
     virtual ~atm();
 private:
-
+    FILE* filename;
+    
 };
 
 #endif /* ATM_H */
