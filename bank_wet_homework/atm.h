@@ -18,16 +18,14 @@
 using namespace std;
 class atm {
 public:
-    atm(char* );
+    atm();
     atm(const atm& orig);
     int create_account(int id);
     int withdraw();
-    string parse();
-    static void* run(void*);
+    void print_line(string str);
     virtual ~atm();
 private:
-    FILE* filename;
-    ifstream file;
+
     
 };
 

@@ -15,6 +15,7 @@
 #include <pthread.h>
 #include "atm.h"
 #include "bank.h"
+#include "parser.h"
 using namespace std;
 
 
@@ -46,9 +47,10 @@ int main(int argc, char** argv) {
     }
     
     pthread_t threads[N];
+    string filename;
     for(int i=2; i<argc; i++){
-        atm atm(argv[i]); // insert filename;
-        pthread_create(&threads[i], NULL, atm.run, NULL); // Responsible for parsing txtfile_i as independent ATM
+        filename = argv[i]; // Need to make a local variable to be passed; argv is behaving funny.
+        pthread_create(&threads[i], NULL, perform_work, &filename); // Responsible for parsing txtfile_i as independent ATM
     }
     bank bank;
     pthread_t bank_thread;

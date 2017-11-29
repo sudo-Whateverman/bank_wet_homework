@@ -15,13 +15,13 @@
 
 #include "atm.h"
 
-atm::atm(char* filename) {
-    ifstream file(filename);
+atm::atm() {
     
 }
 
 atm::atm(const atm& orig) {
 }
+
 
 int atm::create_account(int id){
     return 0;
@@ -30,18 +30,8 @@ int atm::withdraw(){
     //etc.
     return 0;
 }
-string atm::parse(){
-    string str; 
-    getline(file, str);
-    std::cout << str;
-    return str;
-}
-void* atm::run(void *){
-    string line;
-    cout << "Test";
-//    line = parse();
-    sleep(1); // lock this.
-    return NULL;
+void atm::print_line(string str){
+    cout << str << endl;
 }
 
 
