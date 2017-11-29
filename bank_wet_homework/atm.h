@@ -14,6 +14,7 @@
 #ifndef ATM_H
 #define ATM_H
 #include <fstream>
+#include <unistd.h>
 using namespace std;
 class atm {
 public:
@@ -21,11 +22,12 @@ public:
     atm(const atm& orig);
     int create_account(int id);
     int withdraw();
-    char* parse();
+    string parse();
     static void* run(void*);
     virtual ~atm();
 private:
     FILE* filename;
+    ifstream file;
     
 };
 

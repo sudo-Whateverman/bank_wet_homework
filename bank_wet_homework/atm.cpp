@@ -11,6 +11,8 @@
  * Created on November 27, 2017, 7:07 PM
  */
 
+#include <iostream>
+
 #include "atm.h"
 
 atm::atm(char* filename) {
@@ -21,24 +23,24 @@ atm::atm(char* filename) {
 atm::atm(const atm& orig) {
 }
 
-atm::create_account(int id){
-    
+int atm::create_account(int id){
+    return 0;
 }
-atm::withdraw(){
+int atm::withdraw(){
     //etc.
+    return 0;
 }
-atm::parse(){
+string atm::parse(){
     string str; 
-    file.getline(str, 255)
-    cout << str;
-    
-    
+    getline(file, str);
+    std::cout << str;
+    return str;
 }
-atm::run(){
-    do{
-        parse();
-        sleep(1); // lock this.
-    }while(line!=EOF)
+void* atm::run(void *){
+    string line;
+//    line = parse();
+    sleep(1); // lock this.
+    return NULL;
 }
 
 

@@ -18,8 +18,8 @@ bank::bank() {
 
 bank::bank(const bank& orig) {
 }
-int bank::bank_run(){
-    return 0;
+void* bank::bank_run(void *){
+    return NULL;
 }
 
 bank::~bank() {
