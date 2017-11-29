@@ -38,6 +38,7 @@ string atm::parse(){
 }
 void* atm::run(void *){
     string line;
+    cout << "Test";
 //    line = parse();
     sleep(1); // lock this.
     return NULL;

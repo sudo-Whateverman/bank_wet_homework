@@ -62,22 +62,22 @@ LDLIBSOPTIONS=-lpthread
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework ${OBJECTFILES} ${LDLIBSOPTIONS}
+	g++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/atm.o: atm.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/atm.o atm.cpp
+	$(COMPILE.cc) -g -Werror -I. -include atm.h -include bank.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/atm.o atm.cpp
 
 ${OBJECTDIR}/bank.o: bank.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/bank.o bank.cpp
+	$(COMPILE.cc) -g -Werror -I. -include atm.h -include bank.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/bank.o bank.cpp
 
 ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -Werror -I. -include atm.h -include bank.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
