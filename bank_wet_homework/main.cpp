@@ -16,8 +16,10 @@
 #include "atm.h"
 #include "bank.h"
 #include "parser.h"
+#include "accounts_manager.h"
 using namespace std;
 
+accounts_manager Ac_mng();
 
 int main(int argc, char** argv) {
     
