@@ -7,8 +7,8 @@ static std::vector<account> accountlist;
 
 void account::createAccount(int serialno, string password, int initialbalance) {
 	pthread_mutex_lock(&listwritemutex);
-	for (auto & i : accountlist) {
-		if (i._serialno == serialno) {
+	for (std::vector<account>::iterator i=accountlist.begin(); i!= accountlist.end(); ++i) {
+		if (i->_serialno == serialno) {
 			std::cout << "Account number " << serialno << " already exists." << endl;
 			pthread_mutex_unlock(&listwritemutex);
 			return;
@@ -33,8 +33,8 @@ int account::getBalance(int serialno, string password) {
 	int spot = -1;
 	int iterator = 0;
 	int balance;
-	for (auto & i : accountlist) {
-		if (i._serialno == serialno) {
+	for (std::vector<account>::iterator i=accountlist.begin(); i!= accountlist.end(); ++i) {
+		if (i->_serialno == serialno) {
 			spot = iterator;
 		}
 		iterator++;

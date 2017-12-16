@@ -35,6 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/account.o \
+	${OBJECTDIR}/accounts_manager.o \
 	${OBJECTDIR}/atm.o \
 	${OBJECTDIR}/bank.o \
 	${OBJECTDIR}/main.o \
@@ -65,25 +67,35 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	g++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/account.o: account.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/account.o account.cpp
+
+${OBJECTDIR}/accounts_manager.o: accounts_manager.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/accounts_manager.o accounts_manager.cpp
+
 ${OBJECTDIR}/atm.o: atm.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/atm.o atm.cpp
+	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/atm.o atm.cpp
 
 ${OBJECTDIR}/bank.o: bank.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/bank.o bank.cpp
+	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/bank.o bank.cpp
 
 ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/parser.o: parser.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/parser.o parser.cpp
+	$(COMPILE.cc) -g -Wall -I. -include atm.h -include bank.h -include parser.h -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/parser.o parser.cpp
 
 # Subprojects
 .build-subprojects:

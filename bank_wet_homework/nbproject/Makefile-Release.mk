@@ -35,6 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/account.o \
+	${OBJECTDIR}/accounts_manager.o \
 	${OBJECTDIR}/atm.o \
 	${OBJECTDIR}/bank.o \
 	${OBJECTDIR}/main.o \
@@ -64,6 +66,16 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/bank_wet_homework ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/account.o: account.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/account.o account.cpp
+
+${OBJECTDIR}/accounts_manager.o: accounts_manager.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/accounts_manager.o accounts_manager.cpp
 
 ${OBJECTDIR}/atm.o: atm.cpp
 	${MKDIR} -p ${OBJECTDIR}

@@ -17,8 +17,9 @@
 #include <string.h>
 
 void* perform_work(void* argument) {
-  string filename, str;
-  filename = *reinterpret_cast<string*> (argument);
+  string str;
+  char * filename;
+  filename = reinterpret_cast<char*> (argument);
   ifstream file(filename);
   char action[10];
   char* parsed;
