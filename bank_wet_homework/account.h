@@ -10,6 +10,7 @@ using namespace std;
 static pthread_mutex_t listwritemutex;
 static pthread_mutex_t listreadmutex;
 static int listrdcount = 0;
+static pthread_mutex_t filewritemutex;
 
 class account {
 public:
@@ -22,15 +23,12 @@ public:
 		pthread_mutex_init(&_writemutex, NULL);
 		_rdcount = 0;
 	}
-    static void createAccount(int serialno, string password, int initialbalance);
-    static int getBalance(int serialno, string password);
-    static void deposit(int seriano, string password, int amount);
-    static void withdraw(int serialno, string password, int amount);
-    static void makeVip(int serialno, string password);
-    void account_write_lock();
-    void account_write_unlock();
-    void account_read_lock();
-    void account_read_unlock();
+    static void createAccount(int serialno, string password, int initialbalance, int atmid);
+    static void getBalance(int serialno, string password, int atmid);
+    static void deposit(int seriano, string password, int amount, int atmid);
+    static void withdraw(int serialno, string password, int amount, int atmid);
+    static void makeVip(int serialno, string password, int atmid);
+    static int collectfees();
 private:
     int _serialno;
     string _password;

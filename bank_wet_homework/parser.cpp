@@ -17,9 +17,10 @@
 #include <string.h>
 
 void* perform_work(void* argument) {
-  string str;
-  char * filename;
-  filename = reinterpret_cast<char*> (argument);
+  string filename, str;
+  threadargs thargs = *((threadargs*) argument);
+  filename = thargs.filename;
+  int atmid = thargs.atmid;
   ifstream file(filename);
   char action[10];
   char* parsed;
@@ -34,35 +35,35 @@ void* perform_work(void* argument) {
 		  int serialno = atoi(strtok(NULL, delimiters));
 		  string password = strtok(NULL, delimiters);
 		  int initialbalance = atoi(strtok(NULL, delimiters));
-		  account::createAccount(serialno, password, initialbalance);
+		  account::createAccount(serialno, password, initialbalance, atmid);
 	  }
 	  else if (!strcmp(action, "L")) {
 		  // Make VIP
 		  int serialno = atoi(strtok(NULL, delimiters));
 		  char* password = strtok(NULL, delimiters);
-		  account::makeVip(serialno, password);
+		  account::makeVip(serialno, password, atmid);
 	  }
 	  else if (!strcmp(action, "D")) {
 		  // Deposit
 		  int serialno = atoi(strtok(NULL, delimiters));
 		  string password = strtok(NULL, delimiters);
 		  int balance = atoi(strtok(NULL, delimiters));
-		  account::deposit(serialno, password, balance);
+		  account::deposit(serialno, password, balance, atmid);
 	  }
 	  else if (!strcmp(action, "W")) {
 		  // Withdrawal
 		  int serialno = atoi(strtok(NULL, delimiters));
 		  string password = strtok(NULL, delimiters);
 		  int balance = atoi(strtok(NULL, delimiters));
-		  account::withdraw(serialno, password, balance);
+		  account::withdraw(serialno, password, balance, atmid);
 	  }
 	  else if (!strcmp(action, "B")) {
 		  // Check balance
 		  int serialno = atoi(strtok(NULL, delimiters));
 		  string password = strtok(NULL, delimiters);
-		  account::getBalance(serialno, password);
+		  account::getBalance(serialno, password, atmid);
 	  }
-
+	  usleep(100000);
   }
   return NULL;
 }

@@ -18,5 +18,10 @@
 #include <pthread.h>
 #include "atm.h"
 using namespace std;
+
+typedef struct _threadargs {
+	string filename;
+	int atmid;
+} threadargs;
 void* perform_work(void* argument);
 #endif /* PARSER_H */

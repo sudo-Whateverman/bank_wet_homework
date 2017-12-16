@@ -13,14 +13,21 @@
 
 #include "bank.h"
 #include <cstddef>
+#include "account.h"
+
+static int bankmoney = 0;
 
 bank::bank() {
 }
 
 bank::bank(const bank& orig) {
 }
+
 void* bank::bank_run(void *){
-    return NULL;
+	// Some while loop here, condition is that at least one atm is still running
+	// (I guess that's what we need the sockets for...)
+	sleep(3);
+	bankmoney += account::collectfees();
 }
 
 bank::~bank() {

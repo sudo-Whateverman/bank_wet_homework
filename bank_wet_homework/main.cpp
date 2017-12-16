@@ -26,8 +26,16 @@ using namespace std;
 int main(int argc, char** argv) {
     pthread_mutex_init(&(listwritemutex), NULL);
     pthread_mutex_init(&(listreadmutex), NULL);
+    pthread_mutex_init(&(filewritemutex), NULL);
 //     Validate input
     int N;
+    pthread_mutex_lock(&filewritemutex);
+    ofstream logger;
+	logger.open("log.txt");
+	logger << ""; // Just to make sure we're starting a clean log, clearing old "log.txt"
+	logger.flush();
+	logger.close();
+	pthread_mutex_unlock(&filewritemutex);
     try
     {
         N = atoi(argv[1]); // number of ATMs - the first arg, the zeroth is the filename
@@ -52,10 +60,11 @@ int main(int argc, char** argv) {
     }
     
     pthread_t threads[N];
-    string filename[N];
+    threadargs thargs[N];
     for(int i=2; i<argc; i++){
-        filename[i-2] = argv[i]; // Need to make a local variable to be passed; argv is behaving funny.
-        pthread_create(&threads[i], NULL, perform_work, &(filename[i-2])); // Responsible for parsing txtfile_i as independent ATM
+        thargs[i-2].filename = argv[i]; // Need to make a local variable to be passed; argv is behaving funny.
+        thargs[i-2].atmid = i-1;
+        pthread_create(&threads[i], NULL, perform_work, &(thargs[i-2])); // Responsible for parsing txtfile_i as independent ATM
     }
     bank bank;
     pthread_t bank_thread;
