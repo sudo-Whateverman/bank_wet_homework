@@ -16,18 +16,21 @@
 #include "atm.h"
 #include "bank.h"
 #include "parser.h"
-#include "accounts_manager.h"
+#include <stdlib.h>
+#include <list>
+#include <string>
+#include "account.h"
 using namespace std;
 
-accounts_manager Ac_mng();
 
 int main(int argc, char** argv) {
-    
+    pthread_mutex_init(&(listwritemutex), NULL);
+    pthread_mutex_init(&(listreadmutex), NULL);
 //     Validate input
     int N;
     try
     {
-        N = stoi(argv[1]); // number of ATMs - the first arg, the zeroth is the filename
+        N = atoi(argv[1]); // number of ATMs - the first arg, the zeroth is the filename
     }
     catch(std::invalid_argument& e){
         // if no conversion could be performed
@@ -41,18 +44,18 @@ int main(int argc, char** argv) {
     }
     for (int i=2; i<argc; i++)
     {
-        if( access( argv[i], R_OK ) == -1 ) {
+        /*if( access( argv[i], 4 ) == -1 ) {
             // file doesn't exists
             cout << "The file specified isn't found" << endl;
             exit(-1);
-        } 
+        } */
     }
     
     pthread_t threads[N];
-    string filename;
+    string filename[N];
     for(int i=2; i<argc; i++){
-        filename = argv[i]; // Need to make a local variable to be passed; argv is behaving funny.
-        pthread_create(&threads[i], NULL, perform_work, &filename); // Responsible for parsing txtfile_i as independent ATM
+        filename[i-2] = argv[i]; // Need to make a local variable to be passed; argv is behaving funny.
+        pthread_create(&threads[i], NULL, perform_work, &(filename[i-2])); // Responsible for parsing txtfile_i as independent ATM
     }
     bank bank;
     pthread_t bank_thread;

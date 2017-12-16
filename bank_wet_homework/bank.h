@@ -11,8 +11,6 @@
  * Created on November 27, 2017, 8:06 PM
  */
 
-// This line is just a commit test - can be deleted
-
 #ifndef BANK_H
 #define BANK_H
 

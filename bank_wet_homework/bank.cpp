@@ -12,6 +12,7 @@
  */
 
 #include "bank.h"
+#include <cstddef>
 
 bank::bank() {
 }

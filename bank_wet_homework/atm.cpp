@@ -10,10 +10,12 @@
  * 
  * Created on November 27, 2017, 7:07 PM
  */
-
+/*
 #include <iostream>
 
 #include "atm.h"
+
+
 
 atm::atm() {
     
@@ -23,8 +25,8 @@ atm::atm(const atm& orig) {
 }
 
 
-int atm::create_account(int id){
-    return 0;
+int atm::create_account(int id, char* password, int initialbalance){
+
 }
 int atm::withdraw(){
     //etc.
@@ -37,4 +39,5 @@ void atm::print_line(string str){
 
 atm::~atm() {
 }
+*/
 

@@ -12,15 +12,56 @@
  */
 
 #include "parser.h"
+#include "account.h"
+#include <stdio.h>
+#include <string.h>
 
 void* perform_work(void* argument) {
   string filename, str;
   filename = *reinterpret_cast<string*> (argument);
   ifstream file(filename);
-  atm *Atm;
-  Atm = new atm();
+  char action[10];
+  char* parsed;
+  char delimiters[] = " ";
+  char line[255];
   while(getline(file, str)){
-      Atm->print_line(str); // TODO: refactor;
+	  strcpy(line, str.c_str());
+	  parsed = strtok(line, delimiters);
+	  strcpy(action,parsed);
+	  if (!strcmp(action, "O")) {
+		  // Open account
+		  int serialno = atoi(strtok(NULL, delimiters));
+		  string password = strtok(NULL, delimiters);
+		  int initialbalance = atoi(strtok(NULL, delimiters));
+		  account::createAccount(serialno, password, initialbalance);
+	  }
+	  else if (!strcmp(action, "L")) {
+		  // Make VIP
+		  int serialno = atoi(strtok(NULL, delimiters));
+		  char* password = strtok(NULL, delimiters);
+		  account::makeVip(serialno, password);
+	  }
+	  else if (!strcmp(action, "D")) {
+		  // Deposit
+		  int serialno = atoi(strtok(NULL, delimiters));
+		  string password = strtok(NULL, delimiters);
+		  int balance = atoi(strtok(NULL, delimiters));
+		  account::deposit(serialno, password, balance);
+	  }
+	  else if (!strcmp(action, "W")) {
+		  // Withdrawal
+		  int serialno = atoi(strtok(NULL, delimiters));
+		  string password = strtok(NULL, delimiters);
+		  int balance = atoi(strtok(NULL, delimiters));
+		  account::withdraw(serialno, password, balance);
+	  }
+	  else if (!strcmp(action, "B")) {
+		  // Check balance
+		  int serialno = atoi(strtok(NULL, delimiters));
+		  string password = strtok(NULL, delimiters);
+		  account::getBalance(serialno, password);
+	  }
+
   }
   return NULL;
 }
