@@ -31,11 +31,16 @@ int main(int argc, char** argv) {
     int N;
     pthread_mutex_lock(&filewritemutex);
     ofstream logger;
-	logger.open("log.txt");
-	logger << ""; // Just to make sure we're starting a clean log, clearing old "log.txt"
-	logger.flush();
-	logger.close();
-	pthread_mutex_unlock(&filewritemutex);
+    logger.open("log.txt");
+    logger << ""; // Just to make sure we're starting a clean log, clearing old "log.txt"
+    logger.flush();
+    logger.close();
+    pthread_mutex_unlock(&filewritemutex);
+    if (argc<2){
+        cout << "Usage:" << endl;
+        cout << "./program Number_of_atms [N_txt_files]" << endl;
+        exit(-1);
+    }
     try
     {
         N = atoi(argv[1]); // number of ATMs - the first arg, the zeroth is the filename
@@ -49,14 +54,6 @@ int main(int argc, char** argv) {
     {
         cout << "Please supply the correct number of arguments" << endl;
         exit(-1);
-    }
-    for (int i=2; i<argc; i++)
-    {
-        /*if( access( argv[i], 4 ) == -1 ) {
-            // file doesn't exists
-            cout << "The file specified isn't found" << endl;
-            exit(-1);
-        } */
     }
     
     pthread_t threads[N];

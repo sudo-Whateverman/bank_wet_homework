@@ -14,5 +14,5 @@ bank.o: bank.cpp bank.h
 parser.o: parser.cpp parser.h
 # Cleaning old files before new make
 clean:
-	$(RM) $(TARGET) *.o *~ "#"* core.*
+	$(RM) $(TARGET) *.o*~ "#"* core.*
 

@@ -1,0 +1,17 @@
+1: New account id is 12347 with password 0144 and initial balance 50
+1: Account 12347 new balance is 1250 after 1200 was deposited
+1: Account 12347 new balance is 750 after 500 was withdrew
+1: New account id is 12348 with password 0144 and initial balance 50
+1: Account 12348 new balance is 1250 after 1200 was deposited
+1: Account 12348 new balance is 750 after 500 was withdrew
+1: New account id is 12349 with password 0144 and initial balance 50
+1: Account 12349 new balance is 1250 after 1200 was deposited
+1: Account 12349 new balance is 750 after 500 was withdrew
+Error 1: : Your transaction failed – password for account id  12349 is incorrect  
+1: Account 12349 balance is 750
+1: Account 12348 balance is 750
+1: Account 12347 balance is 750
+Parser: illegal function of "T 12347 0144 12348 10" has been encountered. Skipped
+Parser: illegal function of "T 12348 0144 12347 10" has been encountered. Skipped
+Bank: commissions of 3% were charged, the bank gained 22$ from account 12347
+Bank: commissions of 3% were charged, the bank gained 22$ from account 12348

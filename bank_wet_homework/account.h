@@ -5,12 +5,14 @@
 #include <fstream>
 #include <unistd.h>
 #include <vector>
+#include <iostream>
+#include <cstdlib>
 using namespace std;
 
-static pthread_mutex_t listwritemutex;
-static pthread_mutex_t listreadmutex;
+static pthread_mutex_t listwritemutex;  // whole list write mutex
+static pthread_mutex_t listreadmutex;  // whole list read mutex
 static int listrdcount = 0;
-static pthread_mutex_t filewritemutex;
+static pthread_mutex_t filewritemutex; // logger file mutex
 
 class account {
 public:
@@ -29,12 +31,13 @@ public:
     static void withdraw(int serialno, string password, int amount, int atmid);
     static void makeVip(int serialno, string password, int atmid);
     static int collectfees();
+    static bool check_password(int serialno, string password, int atmid);
 private:
     int _serialno;
     string _password;
     int _balance;
-    pthread_mutex_t _readmutex;
-    pthread_mutex_t _writemutex;
+    pthread_mutex_t _readmutex;  // read mutex on the i-th account.
+    pthread_mutex_t _writemutex; // write mutex on the i-th account.
     bool _vip;
     int _rdcount;
 };
