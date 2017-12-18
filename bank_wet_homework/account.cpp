@@ -5,14 +5,59 @@
 static std::vector<account> accountlist;
 
 void account::transaction(int src_serialno, string password, int dst_serialno, int ammount, int atmid){
-    pthread_mutex_lock(&filewritemutex);
-    ofstream logger;
-    logger.open("log.txt", std::ios_base::app);
-    // Error <ATM ID>: Your transaction failed – password for account id <id> is incorrect 
-    logger << "Error " << atmid << ": Transaction not implemented" << endl;
-    logger.flush();
-    logger.close();
-    pthread_mutex_unlock(&filewritemutex);
+    pthread_mutex_lock(&listreadmutex);
+    listrdcount++;
+    if (listrdcount == 1) {
+        pthread_mutex_lock(&listwritemutex);
+    }
+    pthread_mutex_unlock(&listreadmutex);
+    int src_spot = -1;
+    int dst_spot = -1;
+    int iterator = 0;
+    for (std::vector<account>::iterator i=accountlist.begin(); i!= accountlist.end(); i++) {
+        if (i->_serialno == src_serialno) {
+            src_spot = iterator;
+        }
+        else if(i->_serialno == dst_serialno){
+            dst_spot = iterator;
+        }
+        iterator++;
+    }
+    if (src_spot != -1 && dst_spot != -1){
+        // Should check order of mutex lock.
+        pthread_mutex_lock(&(accountlist[dst_spot]._writemutex));
+        pthread_mutex_lock(&(accountlist[src_spot]._writemutex));
+        if (accountlist[src_spot]._balance >= ammount){
+            accountlist[src_spot]._balance =- ammount;
+            accountlist[src_spot]._balance =+ ammount;
+            pthread_mutex_lock(&filewritemutex);
+            ofstream logger;
+            logger.open("log.txt", std::ios_base::app);
+//            <ATM ID>: Transfer <amount> from account <account> to account <target_account> new account 
+            logger << atmid << ": Transfer " << ammount << " from account " << src_serialno << " to account " << dst_serialno << " new account" << endl;
+            logger.flush();
+            logger.close();
+            pthread_mutex_unlock(&filewritemutex);
+        }
+        else {
+            pthread_mutex_lock(&filewritemutex);
+            ofstream logger;
+            logger.open("log.txt", std::ios_base::app);
+            logger << "Error " << atmid << ": Your transaction failed - account id " << src_serialno << " balance is lower than " <<  ammount << endl;
+            logger.flush();
+            logger.close();
+            pthread_mutex_unlock(&filewritemutex);
+        }
+        pthread_mutex_unlock(&(accountlist[dst_spot]._writemutex));
+        pthread_mutex_unlock(&(accountlist[src_spot]._writemutex));
+        
+    }
+    pthread_mutex_lock(&listreadmutex);
+    listrdcount--;
+    if (listrdcount == 0) {
+        pthread_mutex_unlock(&listwritemutex);
+    }
+    pthread_mutex_unlock(&listreadmutex);
 }
 
 

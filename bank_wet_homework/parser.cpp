@@ -81,6 +81,17 @@ void* perform_work(void* argument) {
                     account::getBalance(serialno, password, atmid);
                 }
             }
+            else if (!strcmp(action, "T")) {
+                // Make Transaction
+                int src_serialno = atoi(strtok(NULL, delimiters));
+                string password = strtok(NULL, delimiters);
+                int dst_serialno = atoi(strtok(NULL, delimiters));
+                int ammount = atoi(strtok(NULL, delimiters));
+                if (account::check_password(src_serialno, password, atmid))
+                {
+                    account::transaction(src_serialno, password, dst_serialno, ammount, atmid);
+                }
+            }
             else
             {
                 // case that function is neither of the above.

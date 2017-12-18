@@ -25,6 +25,7 @@ public:
 		pthread_mutex_init(&_writemutex, NULL);
 		_rdcount = 0;
 	}
+    static void transaction(int src_serialno, string password, int dst_serialno, int ammount, int atmid);
     static void createAccount(int serialno, string password, int initialbalance, int atmid);
     static void getBalance(int serialno, string password, int atmid);
     static void deposit(int seriano, string password, int amount, int atmid);
