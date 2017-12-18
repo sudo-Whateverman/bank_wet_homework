@@ -4,6 +4,18 @@
 
 static std::vector<account> accountlist;
 
+void account::transaction(int src_serialno, string password, int dst_serialno, int ammount, int atmid){
+    pthread_mutex_lock(&filewritemutex);
+    ofstream logger;
+    logger.open("log.txt", std::ios_base::app);
+    // Error <ATM ID>: Your transaction failed – password for account id <id> is incorrect 
+    logger << "Error " << atmid << ": Transaction not implemented" << endl;
+    logger.flush();
+    logger.close();
+    pthread_mutex_unlock(&filewritemutex);
+}
+
+
 bool account::check_password(int serialno, string password, int atmid) {
     // Just a reader in the readers-writers hierarchy, for both list and account
     bool _pass_correct = false;
@@ -26,7 +38,7 @@ bool account::check_password(int serialno, string password, int atmid) {
         ofstream logger;
         logger.open("log.txt", std::ios_base::app);
         // Error <ATM ID>: Your transaction failed – password for account id <id> is incorrect 
-        logger << "Error " << atmid << ": : Your transaction failed – password for account id  " << serialno << " is incorrect  " << endl;
+        logger << "Error " << atmid << ": Your transaction failed – password for account id  " << serialno << " is incorrect  " << endl;
         logger.flush();
         logger.close();
         pthread_mutex_unlock(&filewritemutex);
