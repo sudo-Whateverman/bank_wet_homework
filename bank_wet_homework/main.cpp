@@ -24,18 +24,19 @@ using namespace std;
 
 
 int main(int argc, char** argv) {
-    pthread_mutex_init(&(listwritemutex), NULL);
-    pthread_mutex_init(&(listreadmutex), NULL);
-    pthread_mutex_init(&(filewritemutex), NULL);
+    pthread_mutex_init(&(account::listwritemutex), NULL);
+    pthread_mutex_init(&(account::listreadmutex), NULL);
+    pthread_mutex_init(&(account::filewritemutex), NULL);
+    pthread_mutex_init(&(bank::atmcntmutex), NULL);
 //     Validate input
     int N;
-    pthread_mutex_lock(&filewritemutex);
+    pthread_mutex_lock(&account::filewritemutex);
     ofstream logger;
     logger.open("log.txt");
     logger << ""; // Just to make sure we're starting a clean log, clearing old "log.txt"
     logger.flush();
     logger.close();
-    pthread_mutex_unlock(&filewritemutex);
+    pthread_mutex_unlock(&account::filewritemutex);
     if (argc<2){
         cout << "Usage:" << endl;
         cout << "./program Number_of_atms [N_txt_files]" << endl;
@@ -55,7 +56,8 @@ int main(int argc, char** argv) {
         cout << "Please supply the correct number of arguments" << endl;
         exit(-1);
     }
-    
+    bank::finishedatms = 0;
+    bank::totalatms = N;
     pthread_t threads[N];
     threadargs thargs[N];
     for(int i=2; i<argc; i++){
@@ -64,11 +66,14 @@ int main(int argc, char** argv) {
         pthread_create(&threads[i], NULL, perform_work, &(thargs[i-2])); // Responsible for parsing txtfile_i as independent ATM
     }
     bank bank;
-    pthread_t bank_thread;
-    pthread_create(&bank_thread, NULL, bank.bank_run, NULL); // Responsible for taking fees every S seconds
+    pthread_t bank_run_thread;
+    pthread_t bank_print_thread;
+    pthread_create(&bank_run_thread, NULL, bank.bank_run, NULL); // Responsible for taking fees every rand[2,4] seconds
+    pthread_create(&bank_print_thread, NULL, bank.bank_status_printer, NULL); // Responsible for printing every 0.5 second
     for (int i=2; i<argc; i++) {
         pthread_join(threads[i], NULL);
     }
-    pthread_join(bank_thread, NULL);
+    pthread_join(bank_run_thread, NULL);
+    pthread_join(bank_print_thread, NULL);
     return 0;
 }

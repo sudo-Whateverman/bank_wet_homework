@@ -15,7 +15,6 @@
 #include <cstddef>
 #include "account.h"
 
-static int bankmoney = 0;
 
 bank::bank() {
 }
@@ -23,13 +22,49 @@ bank::bank() {
 bank::bank(const bank& orig) {
 }
 
-void* bank::bank_run(void *){
-	// Some while loop here, condition is that at least one atm is still running
-	// (I guess that's what we need the sockets for...)
-	sleep(3);
-	bankmoney += account::collectfees();
+void* bank::bank_run(void* arg){
+	int tmpFinishedAtms;
+	int tmpTotalAtms;
+	pthread_mutex_lock(&atmcntmutex);
+	tmpFinishedAtms = finishedatms;
+	tmpTotalAtms = totalatms;
+	pthread_mutex_unlock(&atmcntmutex);
+	while (tmpFinishedAtms != tmpTotalAtms) {
+		bankmoney += account::collectFees();
+		sleep(3);pthread_mutex_lock(&atmcntmutex);
+		tmpFinishedAtms = finishedatms;
+		tmpTotalAtms = totalatms;
+		pthread_mutex_unlock(&atmcntmutex);
+	}
+	return NULL;
+}
+
+void* bank::bank_status_printer(void* arg){
+	int tmpFinishedAtms;
+	int tmpTotalAtms;
+	pthread_mutex_lock(&atmcntmutex);
+	tmpFinishedAtms = finishedatms;
+	tmpTotalAtms = totalatms;
+	pthread_mutex_unlock(&atmcntmutex);
+	while (tmpFinishedAtms != tmpTotalAtms) {
+		usleep(500000);
+		account::printStatus();
+		pthread_mutex_lock(&atmcntmutex);
+		tmpFinishedAtms = finishedatms;
+		tmpTotalAtms = totalatms;
+		pthread_mutex_unlock(&atmcntmutex);
+	}
+	// Just another print to make sure we're not in the buffer zone
+	usleep(500000);
+	account::printStatus();
+	return NULL;
 }
 
 bank::~bank() {
 }
+
+int bank::finishedatms = 0;
+int bank::totalatms = -1;
+int bank::bankmoney = 0;
+pthread_mutex_t bank::atmcntmutex;
 

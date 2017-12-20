@@ -13,6 +13,7 @@
 
 #include "parser.h"
 #include "account.h"
+#include "bank.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -46,66 +47,53 @@ void* perform_work(void* argument) {
                 // Make VIP
                 int serialno = atoi(strtok(NULL, delimiters));
                 char* password = strtok(NULL, delimiters);
-                if (account::check_password(serialno, password, atmid))
-                {
-                    account::makeVip(serialno, password, atmid);
-                }
+                account::makeVip(serialno, password, atmid);
             }
             else if (!strcmp(action, "D")) {
                 // Deposit
                 int serialno = atoi(strtok(NULL, delimiters));
                 string password = strtok(NULL, delimiters);
                 int balance = atoi(strtok(NULL, delimiters));
-                if (account::check_password(serialno, password, atmid))
-                {
-                    account::deposit(serialno, password, balance, atmid);
-                }
+                account::deposit(serialno, password, balance, atmid);
             }
             else if (!strcmp(action, "W")) {
                 // Withdrawal
                 int serialno = atoi(strtok(NULL, delimiters));
                 string password = strtok(NULL, delimiters);
                 int balance = atoi(strtok(NULL, delimiters));
-                if (account::check_password(serialno, password, atmid))
-                {
-                    account::withdraw(serialno, password, balance, atmid);
-                    
-                }
+                account::withdraw(serialno, password, balance, atmid);
             }
             else if (!strcmp(action, "B")) {
                 // Check balance
                 int serialno = atoi(strtok(NULL, delimiters));
                 string password = strtok(NULL, delimiters);
-                if (account::check_password(serialno, password, atmid))
-                {
-                    account::getBalance(serialno, password, atmid);
-                }
+                account::getBalance(serialno, password, atmid);
             }
             else if (!strcmp(action, "T")) {
                 // Make Transaction
                 int src_serialno = atoi(strtok(NULL, delimiters));
                 string password = strtok(NULL, delimiters);
                 int dst_serialno = atoi(strtok(NULL, delimiters));
-                int ammount = atoi(strtok(NULL, delimiters));
-                if (account::check_password(src_serialno, password, atmid))
-                {
-                    account::transaction(src_serialno, password, dst_serialno, ammount, atmid);
-                }
+                int amount = atoi(strtok(NULL, delimiters));
+                account::transaction(src_serialno, password, dst_serialno, amount, atmid);
             }
             else
             {
                 // case that function is neither of the above.
-                pthread_mutex_lock(&filewritemutex);
+                pthread_mutex_lock(&account::filewritemutex);
                 ofstream logger;
                 logger.open("log.txt", std::ios_base::app); // append, has nothing to do with ios, apps or any STD's
                 logger << "Parser: illegal function of \""<< str <<"\" has been encountered. Skipped"  << endl;
                 logger.flush();
                 logger.close();
-                pthread_mutex_unlock(&filewritemutex);
+                pthread_mutex_unlock(&account::filewritemutex);
             }
         }
         usleep(100000);
     }
+    pthread_mutex_lock(&(bank::atmcntmutex));
+    (bank::finishedatms)++;
+    pthread_mutex_unlock(&(bank::atmcntmutex));
     return NULL;
 }
 

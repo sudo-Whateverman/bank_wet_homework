@@ -13,12 +13,26 @@
 
 #ifndef BANK_H
 #define BANK_H
+#include <fstream>
+#include <unistd.h>
+#include <vector>
+#include <iostream>
+#include <cstdlib>
+
+
+//static pthread_mutex_t atmcntmutex;  // atm counter's write mutex
+//static pthread_mutex_t atmcntreadmutex;  // atm counter's read mutex
 
 class bank {
 public:
     bank();
     bank(const bank& orig);
-    static void* bank_run(void *);
+    static void* bank_run(void* arg);
+    static void* bank_status_printer(void* arg);
+    static int finishedatms;
+    static int totalatms;
+    static int bankmoney;
+    static pthread_mutex_t atmcntmutex;
     virtual ~bank();
 private:
 
