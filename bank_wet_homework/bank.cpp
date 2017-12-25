@@ -55,7 +55,7 @@ void* bank::bank_status_printer(void* arg){
 		tmpTotalAtms = totalatms;
 		pthread_mutex_unlock(&atmcntmutex);
 	}
-	 Just another print to make sure we're not in the buffer zone
+//	 Just another print to make sure we're not in the buffer zone
 	usleep(500000);
 	account::printStatus();
 	return NULL;
