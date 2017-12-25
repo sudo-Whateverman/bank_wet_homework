@@ -18,6 +18,7 @@
 #include <string.h>
 
 void* perform_work(void* argument) {
+    // Main parsing thread to parse a line a tokenize inside functions to pass to account manager
     string filename, str;
     int line_num = 0;
     threadargs thargs = *((threadargs*) argument);
@@ -29,59 +30,80 @@ void* perform_work(void* argument) {
     int atmid = thargs.atmid;
     ifstream file(filename.c_str());
     if (!file.good()){
-        cout << "File error: " << filename << " The file specified isn't found" << endl;
+//        cout << "File error: " << filename << " The file specified isn't found" << endl;
         exit(-1); 
     }
-    char action[10];
-    char* parsed;
-    char delimiters[] = " ";
-    char line[255];
+    
     while(getline(file, str)){
         if (!str.empty()){
+            char* args[MAX_ARG];
             cout << atmid << " : "<< line_num << " : " << str << endl;
-            strcpy(line, str.c_str());
-            parsed = strtok(line, delimiters);
-            strcpy(action,parsed);
+            char* line = strdup(str.c_str());
+            int num_arg;
+            char* action;
+            char delimiters[] = " ";
+            action = strtok(line, delimiters);
+            if (action == NULL)
+		continue; 
+            args[0] = action;
+            for (int i=1; i<MAX_ARG; i++)
+            {
+		args[i] = strtok(NULL, delimiters); 
+		if (args[i] != NULL) 
+                    num_arg++;   
+            }
             if (!strcmp(action, "O")) {
                 // Open account
-                int serialno = atoi(strtok(NULL, delimiters));
-                string password = strtok(NULL, delimiters);
-                int initialbalance = atoi(strtok(NULL, delimiters));
-                account::createAccount(serialno, password, initialbalance, atmid);
+                if (num_arg == 4){
+                    int serialno = atoi(args[1]);
+                    string password = args[2];
+                    int initialbalance = atoi(args[3]);
+                    account::createAccount(serialno, password, initialbalance, atmid);
+                }
             }
             else if (!strcmp(action, "L")) {
                 // Make VIP
-                int serialno = atoi(strtok(NULL, delimiters));
-                string password = strtok(NULL, delimiters);
-                account::makeVip(serialno, password, atmid);
+                if (num_arg == 3){
+                    int serialno = atoi(args[1]);
+                    string password = args[2];
+                    account::makeVip(serialno, password, atmid);
+                }
             }
             else if (!strcmp(action, "D")) {
                 // Deposit
-                int serialno = atoi(strtok(NULL, delimiters));
-                string password = strtok(NULL, delimiters);
-                int balance = atoi(strtok(NULL, delimiters));
-                account::deposit(serialno, password, balance, atmid);
+                if (num_arg == 4){
+                    int serialno = atoi(args[1]);
+                    string password = args[2];
+                    int balance = atoi(args[3]);
+                    account::deposit(serialno, password, balance, atmid);
+                }
             }
             else if (!strcmp(action, "W")) {
                 // Withdrawal
-                int serialno = atoi(strtok(NULL, delimiters));
-                string password = strtok(NULL, delimiters);
-                int balance = atoi(strtok(NULL, delimiters));
-                account::withdraw(serialno, password, balance, atmid);
+                if (num_arg == 4){
+                    int serialno = atoi(args[1]);
+                    string password = args[2];
+                    int balance = atoi(args[3]);
+                    account::withdraw(serialno, password, balance, atmid);
+                }
             }
             else if (!strcmp(action, "B")) {
                 // Check balance
-                int serialno = atoi(strtok(NULL, delimiters));
-                string password = strtok(NULL, delimiters);
-                account::getBalance(serialno, password, atmid);
+                if (num_arg == 3){
+                    int serialno = atoi(args[1]);
+                    string password = args[2];
+                    account::getBalance(serialno, password, atmid);
+                }
             }
             else if (!strcmp(action, "T")) {
                 // Make Transaction
-                int src_serialno = atoi(strtok(NULL, delimiters));
-                string password = strtok(NULL, delimiters);
-                int dst_serialno = atoi(strtok(NULL, delimiters));
-                int amount = atoi(strtok(NULL, delimiters));
-                account::transaction(src_serialno, password, dst_serialno, amount, atmid);
+                if (num_arg == 5){
+                    int src_serialno = atoi(args[1]);
+                    string password = args[2];
+                    int dst_serialno = atoi(args[3]);
+                    int amount = atoi(args[4]);
+                    account::transaction(src_serialno, password, dst_serialno, amount, atmid);
+                }
             }
             else
             {
@@ -95,7 +117,7 @@ void* perform_work(void* argument) {
                 pthread_mutex_unlock(&account::filewritemutex);
             }
         }
-//        usleep(100000);
+        usleep(100000);
         str.clear();
         line_num ++;
     }

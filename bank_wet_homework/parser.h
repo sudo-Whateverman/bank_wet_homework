@@ -18,6 +18,8 @@
 #include <pthread.h>
 #include "atm.h"
 using namespace std;
+#define MAX_LINE_SIZE 80
+#define MAX_ARG 20
 
 typedef struct _threadargs {
 	string filename;
