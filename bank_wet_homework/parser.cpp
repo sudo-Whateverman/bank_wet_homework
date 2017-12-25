@@ -30,14 +30,14 @@ void* perform_work(void* argument) {
     int atmid = thargs.atmid;
     ifstream file(filename.c_str());
     if (!file.good()){
-//        cout << "File error: " << filename << " The file specified isn't found" << endl;
+        cout << "File error: " << filename << " The file specified isn't found" << endl;
         exit(-1); 
     }
     
     while(getline(file, str)){
         if (!str.empty()){
             char* args[MAX_ARG];
-            cout << atmid << " : "<< line_num << " : " << str << endl;
+//            cout << atmid << " : "<< line_num << " : " << str << endl;
             char* line = strdup(str.c_str());
             int num_arg;
             char* action;

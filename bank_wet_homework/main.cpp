@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     threadargs thargs[N];
     for(int i=2; i<argc; i++){
         thargs[i-2].filename.assign(argv[i]); // Need to make a local variable to be passed; argv is behaving funny.
-        cout<< thargs[i-2].filename << endl ;
+//        cout<< thargs[i-2].filename << endl ;
         thargs[i-2].atmid = i-1;
         pthread_create(&threads[i], NULL, perform_work, &(thargs[i-2])); // Responsible for parsing txtfile_i as independent ATM
     }
