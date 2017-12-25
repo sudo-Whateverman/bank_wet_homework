@@ -34,6 +34,7 @@ void account::transaction(int src_serialno, string password, int dst_serialno, i
         if (accountlist[src_spot]._balance >= amount){
             accountlist[src_spot]._balance -= amount;
             accountlist[dst_spot]._balance += amount;
+            sleep(1);
             pthread_mutex_lock(&filewritemutex);
             ofstream logger;
             logger.open("log.txt", std::ios_base::app);
@@ -101,6 +102,7 @@ void account::createAccount(int serialno, string password, int initialbalance, i
     account tmpAccount(serialno, password, initialbalance);
     accountlist.push_back(tmpAccount);
     std::sort(accountlist.begin(), accountlist.end(), accountCompare);
+    sleep(1);
     pthread_mutex_lock(&filewritemutex);
     ofstream logger;
     logger.open("log.txt", std::ios_base::app);
@@ -137,6 +139,7 @@ void account::getBalance(int serialno, string password, int atmid) {
 				pthread_mutex_lock(&(accountlist[spot]._writemutex));
 			}
 			pthread_mutex_unlock(&(accountlist[spot]._readmutex));
+			sleep(1);
 			pthread_mutex_lock(&filewritemutex);
 			ofstream logger;
 			logger.open("log.txt", std::ios_base::app);
@@ -192,6 +195,7 @@ void account::withdraw(int serialno, string password, int amount, int atmid) {
 			pthread_mutex_lock(&(accountlist[spot]._writemutex));
 			if (accountlist[spot]._balance >= amount) {
 				accountlist[spot]._balance -= amount;
+				sleep(1);
 				pthread_mutex_lock(&filewritemutex);
 				ofstream logger;
 				logger.open("log.txt", std::ios_base::app);
@@ -251,6 +255,7 @@ void account::deposit(int serialno, string password, int amount, int atmid) {
     	if (check_password(spot, password, atmid)) {
 			pthread_mutex_lock(&(accountlist[spot]._writemutex));
 			accountlist[spot]._balance += amount;
+			sleep(1);
 			pthread_mutex_lock(&filewritemutex);
 			ofstream logger;
 			logger.open("log.txt", std::ios_base::app);
@@ -258,7 +263,6 @@ void account::deposit(int serialno, string password, int amount, int atmid) {
 			logger.flush();
 			logger.close();
 			pthread_mutex_unlock(&filewritemutex);
-			sleep(2);
 			pthread_mutex_unlock(&(accountlist[spot]._writemutex));
     	}
     }
@@ -299,6 +303,7 @@ void account::makeVip(int serialno, string password, int atmid) {
     }
     if (spot != -1){
     	if (check_password(spot, password, atmid)) {
+    		sleep(1);
 			pthread_mutex_lock(&(accountlist[spot]._writemutex));
 			accountlist[spot]._vip = true;
 			pthread_mutex_unlock(&(accountlist[spot]._writemutex));

@@ -31,7 +31,8 @@ void* bank::bank_run(void* arg){
 	pthread_mutex_unlock(&atmcntmutex);
 	while (tmpFinishedAtms != tmpTotalAtms) {
 		bankmoney += account::collectFees();
-		sleep(3);pthread_mutex_lock(&atmcntmutex);
+		sleep(3);
+		pthread_mutex_lock(&atmcntmutex);
 		tmpFinishedAtms = finishedatms;
 		tmpTotalAtms = totalatms;
 		pthread_mutex_unlock(&atmcntmutex);
