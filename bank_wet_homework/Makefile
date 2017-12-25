@@ -1,6 +1,6 @@
 # Makefile for the smash program
 CC = g++
-CFLAGS = -g -Wall -Wextra -Werror -std=c++11
+CFLAGS = -g -Wall -Wextra -Werror -O -std=c++11
 LDFLAGS = -pthread
 CCLINK = $(CC)
 OBJS = main.o bank.o account.o parser.o
