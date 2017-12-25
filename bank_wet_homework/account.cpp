@@ -4,12 +4,15 @@
 
 static std::vector<account> accountlist;
 
+// Compare function for std sort of the vector of accounts. When Passed, enables to sort the list by serial_no
 struct accountCmpr {
-    // Compare function for std sort of the vector of accounts.
 	bool operator() (const account& lhs, const account& rhs) { return (lhs.getSerialNo() < rhs.getSerialNo()); }
 } accountCompare;
 
 void account::transaction(int src_serialno, string password, int dst_serialno, int amount, int atmid){
+    // A transaction function, passes amount from src to dst.
+    // A reader in the readers-writers hierarchy for a list
+    // A writer in the readers-writers hierarchy for an account
     pthread_mutex_lock(&listreadmutex);
     listrdcount++;
     if (listrdcount == 1) {
@@ -30,8 +33,14 @@ void account::transaction(int src_serialno, string password, int dst_serialno, i
     }
     if (src_spot != -1 && dst_spot != -1){
         // Should check order of mutex lock.
-        pthread_mutex_lock(&(accountlist[src_spot]._writemutex));
-        pthread_mutex_lock(&(accountlist[dst_spot]._writemutex));        
+    	if (dst_spot < src_spot) {
+			pthread_mutex_lock(&(accountlist[dst_spot]._writemutex));
+			pthread_mutex_lock(&(accountlist[src_spot]._writemutex));
+    	}
+    	else {
+    		pthread_mutex_lock(&(accountlist[src_spot]._writemutex));
+    		pthread_mutex_lock(&(accountlist[dst_spot]._writemutex));
+    	}
         if (accountlist[src_spot]._balance >= amount){
             accountlist[src_spot]._balance -= amount;
             accountlist[dst_spot]._balance += amount;
@@ -54,9 +63,14 @@ void account::transaction(int src_serialno, string password, int dst_serialno, i
             logger.close();
             pthread_mutex_unlock(&filewritemutex);
         }
-        pthread_mutex_unlock(&(accountlist[dst_spot]._writemutex));
-        pthread_mutex_unlock(&(accountlist[src_spot]._writemutex));
-        
+        if (dst_spot < src_spot) {
+			pthread_mutex_unlock(&(accountlist[src_spot]._writemutex));
+			pthread_mutex_unlock(&(accountlist[dst_spot]._writemutex));
+        }
+        else {
+        	pthread_mutex_unlock(&(accountlist[dst_spot]._writemutex));
+			pthread_mutex_unlock(&(accountlist[src_spot]._writemutex));
+        }
     }
     pthread_mutex_lock(&listreadmutex);
     listrdcount--;
@@ -68,6 +82,7 @@ void account::transaction(int src_serialno, string password, int dst_serialno, i
 
 
 bool account::check_password(int spot, string password, int atmid) {
+    // Verifies that the correct password is given.
     // Just a reader in the readers-writers hierarchy, for both list and account
     if (accountlist[spot]._password == password) {
     	return true;
@@ -85,7 +100,9 @@ bool account::check_password(int spot, string password, int atmid) {
 }
 
 void account::createAccount(int serialno, string password, int initialbalance, int atmid) {
+    // Create a new instance of account and add to list
     // A writer in the reader-write hierarchy for a list
+    // No entity in read-write hierarchy for account, since Initializer.
     pthread_mutex_lock(&listwritemutex);
     for (std::vector<account>::iterator i=accountlist.begin(); i!= accountlist.end(); i++) {
         if (i->_serialno == serialno) {
@@ -116,6 +133,7 @@ void account::createAccount(int serialno, string password, int initialbalance, i
 
 
 void account::getBalance(int serialno, string password, int atmid) {
+    // Print balance in account specified by ser. num.
     // Just a reader in the readers-writers hierarchy, for both list and account
     pthread_mutex_lock(&listreadmutex);
     listrdcount++;
@@ -174,6 +192,7 @@ void account::getBalance(int serialno, string password, int atmid) {
 }
 
 void account::withdraw(int serialno, string password, int amount, int atmid) {
+    // Withdraw from an account specified by amount
     // A reader in the readers-writers hierarchy for a list
     // A writer in the readers-writers hierarchy for an account
     pthread_mutex_lock(&listreadmutex);
@@ -200,7 +219,7 @@ void account::withdraw(int serialno, string password, int amount, int atmid) {
 				pthread_mutex_lock(&filewritemutex);
 				ofstream logger;
 				logger.open("log.txt", std::ios_base::app);
-				logger << atmid << ": Account " << serialno << " new balance is " << accountlist[spot]._balance << " after " << amount << " was withdrew" << endl;
+				logger << atmid << ": Account " << serialno << " new balance is " << accountlist[spot]._balance << " after " << amount << " $ was withdrew" << endl;
 				logger.flush();
 				logger.close();
 				pthread_mutex_unlock(&filewritemutex);
@@ -235,6 +254,7 @@ void account::withdraw(int serialno, string password, int amount, int atmid) {
 }
 
 void account::deposit(int serialno, string password, int amount, int atmid) {
+    // Deposit an amount to account
     // A reader in the readers-writers hierarchy for a list
     // A writer in the readers-writers hierarchy for an account
     pthread_mutex_lock(&listreadmutex);
@@ -260,7 +280,7 @@ void account::deposit(int serialno, string password, int amount, int atmid) {
 			pthread_mutex_lock(&filewritemutex);
 			ofstream logger;
 			logger.open("log.txt", std::ios_base::app);
-			logger << atmid << ": Account " << serialno << " new balance is " << accountlist[spot]._balance << " after " << amount << " was deposited" << endl;
+			logger << atmid << ": Account " << serialno << " new balance is " << accountlist[spot]._balance << " after " << amount << " $ was deposited" << endl;
 			logger.flush();
 			logger.close();
 			pthread_mutex_unlock(&filewritemutex);
@@ -285,6 +305,7 @@ void account::deposit(int serialno, string password, int amount, int atmid) {
 }
 
 void account::makeVip(int serialno, string password, int atmid) {
+    // A setter for the Vip status in account.
     // A reader in the readers-writers hierarchy for a list
     // A writer in the readers-writers hierarchy for an account
     pthread_mutex_lock(&listreadmutex);
@@ -328,6 +349,8 @@ void account::makeVip(int serialno, string password, int atmid) {
 }
 
 int account::collectFees() {
+    // The collect Fees is run by bank to return the ammount collected from accounts
+    // And update accounts if some sum is collected
     // A reader in the reader-writer hierarchy for a list
     // A writer in the reader-write hierarchy for an account
     int percent = (rand() % 2) + 2; // Between 2 and 4
@@ -348,7 +371,7 @@ int account::collectFees() {
             pthread_mutex_lock(&filewritemutex);
             ofstream logger;
             logger.open("log.txt", std::ios_base::app);
-            logger << "Bank: commissions of " << percent << "% were charged, the bank gained " << singlegain << "$ from account " << i->_serialno << endl;
+            logger << "Bank: commissions of " << percent << " % were charged, the bank gained " << singlegain << " $ from account " << i->_serialno << endl;
             logger.flush();
             logger.close();
             pthread_mutex_unlock(&filewritemutex);
@@ -365,10 +388,9 @@ int account::collectFees() {
 }
 
 void account::printStatus() {
+    // The print_out Status function.
+    // It is called from bank thread and since it needs to print accounts it reads and locks the vector for change
     // Just a reader in the readers-writers hierarchy, for both list and account
-	printf("\033[2J"); // Clear screen
-	printf("\033[1;1H"); // Place cursor on top-left corner
-	printf("Current Bank Status\n");
     pthread_mutex_lock(&listreadmutex);
     listrdcount++;
     if (listrdcount == 1) {
@@ -383,15 +405,23 @@ void account::printStatus() {
 			pthread_mutex_lock(&(i->_writemutex));
 		}
 		pthread_mutex_unlock(&(i->_readmutex));
+    }
+	printf("\033[2J"); // Clear screen
+	printf("\033[1;1H"); // Place cursor on top-left corner
+	printf("Current Bank Status\n");
+    for (std::vector<account>::iterator i=accountlist.begin(); i!= accountlist.end(); i++) {
 		printf("Account %d: Balance - %d $ , Account Password - %s\n", i->_serialno, i->_balance, i->_password.c_str());
-		pthread_mutex_lock(&(i->_readmutex));
+                // somebody should add some security here. Plaintext passwords is a nono
+    }
+	printf("The Bank has %d $\n", bank::bankmoney);
+    for (std::vector<account>::reverse_iterator i=accountlist.rbegin(); i!= accountlist.rend(); i++) {
+    	pthread_mutex_lock(&(i->_readmutex));
 		i->_rdcount--;
 		if (i->_rdcount == 0) {
 			pthread_mutex_unlock(&(i->_writemutex));
 		}
 		pthread_mutex_unlock(&(i->_readmutex));
-    }
-	printf("The bank has %d $\n", bank::bankmoney);
+	}
     pthread_mutex_lock(&listreadmutex);
     listrdcount--;
     if (listrdcount == 0) {

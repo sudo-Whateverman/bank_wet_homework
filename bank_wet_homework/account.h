@@ -9,9 +9,6 @@
 #include <cstdlib>
 using namespace std;
 
-//static pthread_mutex_t listwritemutex;  // whole list write mutex
-//static pthread_mutex_t listreadmutex;  // whole list read mutex
-//static pthread_mutex_t filewritemutex; // logger file mutex
 
 class account {
 public:
@@ -38,14 +35,14 @@ public:
     static pthread_mutex_t listwritemutex;  // whole list write mutex
     static pthread_mutex_t listreadmutex;  // whole list read mutex
     static pthread_mutex_t filewritemutex; // logger file mutex
+    pthread_mutex_t _readmutex;  // read mutex on the i-th account.
+    pthread_mutex_t _writemutex; // write mutex on the i-th account.
+    int _rdcount;
 private:
     int _serialno;
     string _password;
     int _balance;
-    pthread_mutex_t _readmutex;  // read mutex on the i-th account.
-    pthread_mutex_t _writemutex; // write mutex on the i-th account.
     bool _vip;
-    int _rdcount;
 };
 
 #endif /* ACCOUNT_H */
