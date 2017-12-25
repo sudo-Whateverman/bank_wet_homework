@@ -48,16 +48,16 @@ void* bank::bank_status_printer(void* arg){
 	tmpTotalAtms = totalatms;
 	pthread_mutex_unlock(&atmcntmutex);
 	while (tmpFinishedAtms != tmpTotalAtms) {
-		usleep(500000);
-		account::printStatus();
+//		usleep(500000);
+//		account::printStatus();
 		pthread_mutex_lock(&atmcntmutex);
 		tmpFinishedAtms = finishedatms;
 		tmpTotalAtms = totalatms;
 		pthread_mutex_unlock(&atmcntmutex);
 	}
 	// Just another print to make sure we're not in the buffer zone
-	usleep(500000);
-	account::printStatus();
+//	usleep(500000);
+//	account::printStatus();
 	return NULL;
 }
 

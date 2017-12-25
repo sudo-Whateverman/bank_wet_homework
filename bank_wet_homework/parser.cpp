@@ -19,8 +19,13 @@
 
 void* perform_work(void* argument) {
     string filename, str;
+    int line_num = 0;
     threadargs thargs = *((threadargs*) argument);
-    filename = thargs.filename;
+    if (thargs.filename.empty()) {
+        printf("%d\n" ,thargs.atmid);
+        printf("thargs is empty\n");
+    }
+    filename.assign(thargs.filename);
     int atmid = thargs.atmid;
     ifstream file(filename.c_str());
     if (!file.good()){
@@ -33,6 +38,7 @@ void* perform_work(void* argument) {
     char line[255];
     while(getline(file, str)){
         if (!str.empty()){
+            cout << atmid << " : "<< line_num << " : " << str << endl;
             strcpy(line, str.c_str());
             parsed = strtok(line, delimiters);
             strcpy(action,parsed);
@@ -46,7 +52,7 @@ void* perform_work(void* argument) {
             else if (!strcmp(action, "L")) {
                 // Make VIP
                 int serialno = atoi(strtok(NULL, delimiters));
-                char* password = strtok(NULL, delimiters);
+                string password = strtok(NULL, delimiters);
                 account::makeVip(serialno, password, atmid);
             }
             else if (!strcmp(action, "D")) {
@@ -89,7 +95,9 @@ void* perform_work(void* argument) {
                 pthread_mutex_unlock(&account::filewritemutex);
             }
         }
-        usleep(100000);
+//        usleep(100000);
+        str.clear();
+        line_num ++;
     }
     pthread_mutex_lock(&(bank::atmcntmutex));
     (bank::finishedatms)++;
